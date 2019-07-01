@@ -1,184 +1,187 @@
-/*
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-
-#define GLM_FORCE_RADIANS
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <stdlib.h>
+// Include standard headers
 #include <stdio.h>
-#include "constants.h"
-#include "lodepng.h"
-#include "shaderprogram.h"
-#include "myCube.h"
-#include "myTeapot.h"
+#include <stdlib.h>
+#include <vector>
 
-float speed_x=0; //angular speed in radians
-float speed_y=0; //angular speed in radians
-float aspectRatio=1;
-ShaderProgram *sp; //Pointer to the shader program
-//Error processing callback procedure
-void error_callback(int error, const char* description) {
-	fputs(description, stderr);
-}
+// Include GLEW
+#include <GL/glew.h>
 
-void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods) {
-    if (action==GLFW_PRESS) {
-        if (key==GLFW_KEY_LEFT) speed_x=-PI/2;
-        if (key==GLFW_KEY_RIGHT) speed_x=PI/2;
-        if (key==GLFW_KEY_UP) speed_y=PI/2;
-        if (key==GLFW_KEY_DOWN) speed_y=-PI/2;
-    }
-    if (action==GLFW_RELEASE) {
-        if (key==GLFW_KEY_LEFT) speed_x=0;
-        if (key==GLFW_KEY_RIGHT) speed_x=0;
-        if (key==GLFW_KEY_UP) speed_y=0;
-        if (key==GLFW_KEY_DOWN) speed_y=0;
-    }
-}
+// Include GLFW
+#include <GLFW/glfw3.h>
+GLFWwindow* window;
 
-void windowResizeCallback(GLFWwindow* window,int width,int height) {
-    if (height==0) return;
-    aspectRatio=(float)width/(float)height;
-    glViewport(0,0,width,height);
-}
+// Include GLM
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+using namespace glm;
 
+#include <shader.hpp>
+#include <texture.hpp>
+#include <controls.hpp>
+#include <objloader.hpp>
 
-//Initialization code procedure
-void initOpenGLProgram(GLFWwindow* window) {
-	//************Place any code here that needs to be executed once, at the program start************
-	glClearColor(0,0,0,1);
-	glEnable(GL_DEPTH_TEST);
-	glfwSetWindowSizeCallback(window,windowResizeCallback);
-	glfwSetKeyCallback(window,keyCallback);
-	sp=new ShaderProgram("vertex.glsl","geometry.glsl","fragment.glsl");
-
-}
-
-//Release resources allocated by the program
-void freeOpenGLProgram(GLFWwindow* window) {
-	//************Place any code here that needs to be executed once, after the main loop ends************
-	delete sp;
-}
-
-//Drawing procedure
-void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
-	//************Place any code here that draws something inside the window******************l
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glm::mat4 V=glm::lookAt(
-        glm::vec3(0.0f,0.0f,-5.0f),
-        glm::vec3(0.0f,0.0f,0.0f),
-        glm::vec3(0.0f,1.0f,0.0f)); //compute view matrix
-    glm::mat4 P=glm::perspective(50.0f*PI/180.0f, 1.0f, 1.0f, 50.0f); //compute projection matrix
-
-
-    //Cube
-    float* verts=myCubeVertices;
-    float* normals=myCubeNormals;
-    float* colors=myCubeColors;
-    int vertexCount=myCubeVertexCount;
-
-    //Teapot
-    /*float* verts=myTeapotVertices;
-    float* normals=myTeapotNormals;
-    float* colors=myTeapotColors;
-    int vertexCount=myTeapotVertexCount;
-    */
-
-    sp->use();//activate shading program
-    //Send parameters to graphics card
-    glUniformMatrix4fv(sp->u("P"),1,false,glm::value_ptr(P));
-    glUniformMatrix4fv(sp->u("V"),1,false,glm::value_ptr(V));
-
-    glm::mat4 M=glm::mat4(1.0f);
-	M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Compute model matrix
-	M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f)); //Compute model matrix
-    glUniformMatrix4fv(sp->u("M"),1,false,glm::value_ptr(M));
-
-
-    glEnableVertexAttribArray(sp->a("vertex")); //Enable sending data to the attribute vertex
-    glVertexAttribPointer(sp->a("vertex"),4,GL_FLOAT,false,0,verts); //Specify source of the data for the attribute vertex
-
-    glEnableVertexAttribArray(sp->a("normal")); //Enable sending data to the attribute normal
-    glVertexAttribPointer(sp->a("normal"),4,GL_FLOAT,false,0,normals); //Specify source of the data for the attribute vertex
-
-    glEnableVertexAttribArray(sp->a("color")); //Enable sending data to the attribute color
-    glVertexAttribPointer(sp->a("color"),4,GL_FLOAT,false,0,colors); //Specify source of the data for the attribute vertex
-
-
-    glDrawArrays(GL_TRIANGLES,0,vertexCount); //Draw the object
-
-    glDisableVertexAttribArray(sp->a("vertex")); //Disable sending data to the attribute vertex
-    glDisableVertexAttribArray(sp->a("normal")); //Disable sending data to the attribute normal
-    glDisableVertexAttribArray(sp->a("color")); //Disable sending data to the attribute color
-
-    glfwSwapBuffers(window); //Copy back buffer to front buffer
-}
-
-int main(void)
+int main( void )
 {
-	GLFWwindow* window; //Pointer to object that represents the application window
-
-	glfwSetErrorCallback(error_callback);//Register error processing callback procedure
-
-	if (!glfwInit()) { //Initialize GLFW library
-		fprintf(stderr, "Can't initialize GLFW.\n");
-		exit(EXIT_FAILURE);
+	// Initialise GLFW
+	if( !glfwInit() )
+	{
+		fprintf( stderr, "Failed to initialize GLFW\n" );
+		getchar();
+		return -1;
 	}
 
-	window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);  //Create a window 500pxx500px titled "OpenGL" and an OpenGL context associated with it.
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	if (!window) //If no window is opened then close the program
-	{
+	// Open a window and create its OpenGL context
+	window = glfwCreateWindow( 1024, 768, "Tutorial 07 - Model Loading", NULL, NULL);
+	if( window == NULL ){
+		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
+		getchar();
 		glfwTerminate();
-		exit(EXIT_FAILURE);
+		return -1;
+	}
+	glfwMakeContextCurrent(window);
+
+	// Initialize GLEW
+	glewExperimental = true; // Needed for core profile
+	if (glewInit() != GLEW_OK) {
+		fprintf(stderr, "Failed to initialize GLEW\n");
+		getchar();
+		glfwTerminate();
+		return -1;
 	}
 
-	glfwMakeContextCurrent(window); //Since this moment OpenGL context corresponding to the window is active and all OpenGL calls will refer to this context.
-	glfwSwapInterval(1); //During vsync wait for the first refresh
+	// Ensure we can capture the escape key being pressed below
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    // Hide the mouse and enable unlimited mouvement
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	GLenum err;
-	if ((err=glewInit()) != GLEW_OK) { //Initialize GLEW library
-		fprintf(stderr, "Can't initialize GLEW: %s\n", glewGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
+    // Set the mouse at the center of the screen
+    glfwPollEvents();
+    glfwSetCursorPos(window, 1024/2, 768/2);
 
-	initOpenGLProgram(window); //Call initialization procedure
+	// Dark blue background
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
+	// Enable depth test
+	glEnable(GL_DEPTH_TEST);
+	// Accept fragment if it closer to the camera than the former one
+	glDepthFunc(GL_LESS);
 
-	float angle_x=0; //current rotation angle of the object, x axis
-	float angle_y=0; //current rotation angle of the object, y axis
-	glfwSetTime(0); //Zero the timer
-	//Main application loop
-	while (!glfwWindowShouldClose(window)) //As long as the window shouldnt be closed yet...
-	{
-        angle_x+=speed_x*glfwGetTime(); //Add angle by which the object was rotated in the previous iteration
-		angle_y+=speed_y*glfwGetTime(); //Add angle by which the object was rotated in the previous iteration
-        glfwSetTime(0); //Zero the timer
-		drawScene(window,angle_x,angle_y); //Execute drawing procedure
-		glfwPollEvents(); //Process callback procedures corresponding to the events that took place up to now
-	}
-	freeOpenGLProgram(window);
+	// Cull triangles which normal is not towards the camera
+	glEnable(GL_CULL_FACE);
 
-	glfwDestroyWindow(window); //Delete OpenGL context and the window.
-	glfwTerminate(); //Free GLFW resources
-	exit(EXIT_SUCCESS);
+	GLuint VertexArrayID;
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
+
+	// Create and compile our GLSL program from the shaders
+	GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+
+	// Get a handle for our "MVP" uniform
+	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+
+	// Load the texture
+	GLuint Texture = loadDDS("uvmap.DDS");
+
+	// Get a handle for our "myTextureSampler" uniform
+	GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
+
+	// Read our .obj file
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals; // Won't be used at the moment.
+	bool res = loadOBJ("cube.obj", vertices, uvs, normals);
+
+	// Load it into a VBO
+
+	GLuint vertexbuffer;
+	glGenBuffers(1, &vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+
+	GLuint uvbuffer;
+	glGenBuffers(1, &uvbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+
+	do{
+
+		// Clear the screen
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Use our shader
+		glUseProgram(programID);
+
+		// Compute the MVP matrix from keyboard and mouse input
+		computeMatricesFromInputs();
+		glm::mat4 ProjectionMatrix = getProjectionMatrix();
+		glm::mat4 ViewMatrix = getViewMatrix();
+		glm::mat4 ModelMatrix = glm::mat4(1.0);
+		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+		// Send our transformation to the currently bound shader,
+		// in the "MVP" uniform
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, Texture);
+		// Set our "myTextureSampler" sampler to use Texture Unit 0
+		glUniform1i(TextureID, 0);
+
+		// 1rst attribute buffer : vertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glVertexAttribPointer(
+			0,                  // attribute
+			3,                  // size
+			GL_FLOAT,           // type
+			GL_FALSE,           // normalized?
+			0,                  // stride
+			(void*)0            // array buffer offset
+		);
+
+		// 2nd attribute buffer : UVs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glVertexAttribPointer(
+			1,                                // attribute
+			2,                                // size
+			GL_FLOAT,                         // type
+			GL_FALSE,                         // normalized?
+			0,                                // stride
+			(void*)0                          // array buffer offset
+		);
+
+		// Draw the triangle !
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size() );
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+
+		// Swap buffers
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+
+	} // Check if the ESC key was pressed or the window was closed
+	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
+		   glfwWindowShouldClose(window) == 0 );
+
+	// Cleanup VBO and shader
+	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &uvbuffer);
+	glDeleteProgram(programID);
+	glDeleteTextures(1, &Texture);
+	glDeleteVertexArrays(1, &VertexArrayID);
+
+	// Close OpenGL window and terminate GLFW
+	glfwTerminate();
+
+	return 0;
 }
+
