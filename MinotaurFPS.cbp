@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="en_szkielet07b_win" />
+		<Option title="MinotaurFPS" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -46,17 +46,17 @@
 			<Add directory="glfw/lib" />
 			<Add directory="glew/lib" />
 		</Linker>
-		<Unit filename="constants.h" />
-		<Unit filename="fragment.glsl" />
-		<Unit filename="geometry.glsl" />
-		<Unit filename="lodepng.cpp" />
-		<Unit filename="lodepng.h" />
+		<Unit filename="TextureFragmentShader.fragmentshader" />
+		<Unit filename="TransformVertexShader.vertexshader" />
+		<Unit filename="controls.cpp" />
+		<Unit filename="controls.hpp" />
 		<Unit filename="main_file.cpp" />
-		<Unit filename="myCube.h" />
-		<Unit filename="myTeapot.h" />
-		<Unit filename="shaderprogram.cpp" />
-		<Unit filename="shaderprogram.h" />
-		<Unit filename="vertex.glsl" />
+		<Unit filename="objloader.cpp" />
+		<Unit filename="objloader.hpp" />
+		<Unit filename="shader.cpp" />
+		<Unit filename="shader.hpp" />
+		<Unit filename="texture.cpp" />
+		<Unit filename="texture.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
