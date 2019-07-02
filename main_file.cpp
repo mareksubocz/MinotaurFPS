@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <iostream>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -20,8 +21,17 @@ using namespace glm;
 #include <controls.hpp>
 #include <objloader.hpp>
 
+#include <vector>
+
+//Zwraca jedynki tam, gdzie maja byc szesciany
+std::vector< std::vector<bool> > labirynt(int rozmiar){
+    std::vector< std::vector<bool> > a(rozmiar,std::vector<bool>(rozmiar, int(rand()*2/RAND_MAX)));
+    return a;
+}
+
 int main( void )
 {
+    labirynt(4);
 	// Initialise GLFW
 	if( !glfwInit() )
 	{
