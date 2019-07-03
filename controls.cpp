@@ -1,6 +1,6 @@
 // Include GLFW
 #include <GLFW/glfw3.h>
-extern GLFWwindow* window; // The "extern" keyword here is to access the variable "window" declared in tutorialXXX.cpp. This is a hack to keep the tutorials simple. Please avoid this.
+extern GLFWwindow* window;
 
 // Include GLM
 #include <glm/glm.hpp>
@@ -69,9 +69,8 @@ void computeMatricesFromInputs(){
 		cos(horizontalAngle - 3.14f/2.0f)
 	);
 
-	glm::vec3 nullOutVertical = glm::vec3(
-                                       1.0f,0.0f,1.0f
-                                       );
+	glm::vec3 nullOutVertical = glm::vec3(1,0,1);
+	glm::vec3 floor = glm::vec3(0,1,0);
 
 	// Up vector
 	glm::vec3 up = glm::cross( right, direction );
@@ -101,12 +100,12 @@ void computeMatricesFromInputs(){
     if(inAir == true){
         currSpeedUp -= speed/40;
         position += up * deltaTime * currSpeedUp;
-        if(position.y <= 0.0)
+        if(position.y <= 1.0)
             inAir = false;
     }
-    if(position.y < 0.0) position.y = 0;
+    if(position.y < 1.0) position.y = 1;
 
-	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
+	float FoV = initialFoV;
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.1f, 100.0f);
