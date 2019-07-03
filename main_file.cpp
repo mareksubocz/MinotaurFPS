@@ -49,9 +49,8 @@ int main( void )
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow( 1024, 768, "Tutorial 07 - Model Loading", NULL, NULL);
+	window = glfwCreateWindow( 1024, 768, "MinotaurFPS", NULL, NULL);
 	if( window == NULL ){
-		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
 		getchar();
 		glfwTerminate();
 		return -1;
@@ -103,25 +102,32 @@ int main( void )
 	std::vector<glm::vec3> gunVertices;
 	std::vector<glm::vec2> gunUvs;
 	std::vector<glm::vec3> gunNormals; // Won't be used at the moment.
-	loadOBJ("gun.obj", gunVertices, gunUvs, gunNormals);
+	loadOBJ("GUN.obj", gunVertices, gunUvs, gunNormals);
 
 	// Read our .obj file
 	std::vector<glm::vec3> chairVertices;
 	std::vector<glm::vec2> chairUvs;
 	std::vector<glm::vec3> chairNormals; // Won't be used at the moment.
-	loadOBJ("chair.obj", chairVertices, chairUvs, chairNormals);
+	loadOBJ("CHAIR.obj", chairVertices, chairUvs, chairNormals);
 
 	// Read our .obj file
 	std::vector<glm::vec3> wallVertices;
 	std::vector<glm::vec2> wallUvs;
 	std::vector<glm::vec3> wallNormals; // Won't be used at the moment.
-	loadOBJ("wall.obj", wallVertices, wallUvs, wallNormals);
+	loadOBJ("WALL.obj", wallVertices, wallUvs, wallNormals);
+
+		// Read our .obj file
+	std::vector<glm::vec3> floorVertices;
+	std::vector<glm::vec2> floorUvs;
+	std::vector<glm::vec3> floorNormals; // Won't be used at the moment.
+	loadOBJ("FLOOR.obj", floorVertices, floorUvs, floorNormals);
 
 
 	GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
 	GLuint gunTexture = loadDDS("gun.dds");
 	GLuint wallTexture = loadDDS("wall.dds");
 	GLuint chairTexture = loadDDS("chair.dds");
+	GLuint floorTexture = loadDDS("floor.dds");
 
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
@@ -173,6 +179,30 @@ int main( void )
         glBufferData(GL_ARRAY_BUFFER, chairUvs.size() * sizeof(glm::vec2), &chairUvs[0], GL_STATIC_DRAW);
 
         drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, chairVertices.size(), chairTexture, TextureID);
+
+
+        //==============================DRAW A WALL==========================================
+        //fill vertex buffer with vertex data
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, wallVertices.size() * sizeof(glm::vec3), &wallVertices[0], GL_STATIC_DRAW);
+
+        //same with UV buffer
+        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+        glBufferData(GL_ARRAY_BUFFER, wallUvs.size() * sizeof(glm::vec2), &wallUvs[0], GL_STATIC_DRAW);
+
+        drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, wallVertices.size(), wallTexture, TextureID);
+
+
+        //==============================DRAW THE FLOOR==========================================
+        //fill vertex buffer with vertex data
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, floorVertices.size() * sizeof(glm::vec3), &floorVertices[0], GL_STATIC_DRAW);
+
+        //same with UV buffer
+        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+        glBufferData(GL_ARRAY_BUFFER, floorUvs.size() * sizeof(glm::vec2), &floorUvs[0], GL_STATIC_DRAW);
+
+        drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, floorVertices.size(), floorTexture, TextureID);
 
 
 		// Swap buffers

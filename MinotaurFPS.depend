@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1562149321 source:c:\users\miesz\desktop\minotaurfps\controls.cpp
+1562161412 source:c:\users\miesz\desktop\minotaurfps\controls.cpp
 	<GLFW/glfw3.h>
 	<glm/glm.hpp>
 	<glm/gtc/matrix_transform.hpp>
@@ -718,7 +718,7 @@
 
 1562149321 c:\users\miesz\desktop\minotaurfps\controls.hpp
 
-1562149321 source:c:\users\miesz\desktop\minotaurfps\objloader.cpp
+1562161426 source:c:\users\miesz\desktop\minotaurfps\objloader.cpp
 	<vector>
 	<stdio.h>
 	<string>
@@ -1574,7 +1574,7 @@
 
 1562149321 c:\users\miesz\desktop\minotaurfps\texture.hpp
 
-1562149976 source:c:\users\miesz\desktop\minotaurfps\main_file.cpp
+1562161556 source:c:\users\miesz\desktop\minotaurfps\main_file.cpp
 	<stdio.h>
 	<stdlib.h>
 	<vector>
