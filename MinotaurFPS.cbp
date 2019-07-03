@@ -46,10 +46,11 @@
 			<Add directory="glfw/lib" />
 			<Add directory="glew/lib" />
 		</Linker>
-		<Unit filename="TextureFragmentShader.fragmentshader" />
-		<Unit filename="TransformVertexShader.vertexshader" />
 		<Unit filename="controls.cpp" />
 		<Unit filename="controls.hpp" />
+		<Unit filename="drawmodel.cpp" />
+		<Unit filename="drawmodel.hpp" />
+		<Unit filename="fragment.glsl" />
 		<Unit filename="main_file.cpp" />
 		<Unit filename="objloader.cpp" />
 		<Unit filename="objloader.hpp" />
@@ -57,6 +58,7 @@
 		<Unit filename="shader.hpp" />
 		<Unit filename="texture.cpp" />
 		<Unit filename="texture.hpp" />
+		<Unit filename="vertex.glsl" />
 		<Extensions>
 			<code_completion />
 			<envvars />

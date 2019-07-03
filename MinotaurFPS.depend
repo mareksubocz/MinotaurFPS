@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1561984019 source:c:\users\miesz\desktop\minotaurfps\controls.cpp
+1562149321 source:c:\users\miesz\desktop\minotaurfps\controls.cpp
 	<GLFW/glfw3.h>
 	<glm/glm.hpp>
 	<glm/gtc/matrix_transform.hpp>
@@ -716,9 +716,9 @@
 	"../trigonometric.hpp"
 	"../matrix.hpp"
 
-1561979012 c:\users\miesz\desktop\minotaurfps\controls.hpp
+1562149321 c:\users\miesz\desktop\minotaurfps\controls.hpp
 
-1561979012 source:c:\users\miesz\desktop\minotaurfps\objloader.cpp
+1562149321 source:c:\users\miesz\desktop\minotaurfps\objloader.cpp
 	<vector>
 	<stdio.h>
 	<string>
@@ -729,9 +729,9 @@
 	<assimp/scene.h>
 	<assimp/postprocess.h>
 
-1561979013 c:\users\miesz\desktop\minotaurfps\objloader.hpp
+1562149321 c:\users\miesz\desktop\minotaurfps\objloader.hpp
 
-1561979013 source:c:\users\miesz\desktop\minotaurfps\shader.cpp
+1562149321 source:c:\users\miesz\desktop\minotaurfps\shader.cpp
 	<stdio.h>
 	<string>
 	<vector>
@@ -753,9 +753,9 @@
 	<OpenGL/glu.h>
 	<GL/glu.h>
 
-1561979013 c:\users\miesz\desktop\minotaurfps\shader.hpp
+1562149321 c:\users\miesz\desktop\minotaurfps\shader.hpp
 
-1561979013 source:c:\users\miesz\desktop\minotaurfps\texture.cpp
+1562149321 source:c:\users\miesz\desktop\minotaurfps\texture.cpp
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -1544,4 +1544,49 @@
 
 1562094529 source:c:\users\m&ms\desktop\minotaurfps\labirynt.cpp
 	<iostream>
+
+1562150223 source:c:\users\miesz\desktop\minotaurfps\drawmodel.cpp
+	"drawmodel.hpp"
+	<stdio.h>
+	<stdlib.h>
+	<vector>
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<glm/glm.hpp>
+	<glm/gtc/matrix_transform.hpp>
+	<shader.hpp>
+	<texture.hpp>
+	<controls.hpp>
+	<objloader.hpp>
+
+1562150227 c:\users\miesz\desktop\minotaurfps\drawmodel.hpp
+	<stdio.h>
+	<stdlib.h>
+	<vector>
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<glm/glm.hpp>
+	<glm/gtc/matrix_transform.hpp>
+	<shader.hpp>
+	<texture.hpp>
+	<controls.hpp>
+	<objloader.hpp>
+
+1562149321 c:\users\miesz\desktop\minotaurfps\texture.hpp
+
+1562149976 source:c:\users\miesz\desktop\minotaurfps\main_file.cpp
+	<stdio.h>
+	<stdlib.h>
+	<vector>
+	<iostream>
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<glm/glm.hpp>
+	<glm/gtc/matrix_transform.hpp>
+	"shader.hpp"
+	"texture.hpp"
+	"controls.hpp"
+	"objloader.hpp"
+	"drawmodel.hpp"
+	<vector>
 
