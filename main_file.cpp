@@ -26,6 +26,7 @@ using namespace glm;
 //Zwraca jedynki tam, gdzie maja byc szesciany
 std::vector< std::vector<bool> > labirynt(int rozmiar){
     std::vector< std::vector<bool> > a(rozmiar,std::vector<bool>(rozmiar, int(rand()*2/RAND_MAX)));
+    a[0][0] = a[rozmiar-1][rozmiar-1] = 0;
     return a;
 }
 
