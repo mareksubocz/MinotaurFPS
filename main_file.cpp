@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <iostream>
+#include <ctime>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -39,6 +40,7 @@ int goalY = 5;
 int main( void )
 {
     std::vector<std::vector<int> > labirynth(10, std::vector<int>(10));
+    srand(time(0));
 	// Initialise GLFW
 	if( !glfwInit() )
 	{
@@ -104,7 +106,7 @@ int main( void )
 
 	//generate map
     		for(int i = 0; i < labirynth.size(); i++){
-            for(int j = 0; j < labirynth[i].size(); j++)
+            for(int j = 1; j < labirynth[i].size(); j++)
                 if(((int)rand())%4==0) //25% chance for a block to be blocked
                     labirynth[i][j] = LABIRYNTH_WALL;
                 else if(!goalSet && ((int)rand())%15==0){
@@ -118,8 +120,6 @@ int main( void )
             if(!goalSet)
                 labirynth[5][5] = LABIRYNTH_GOAL;
 		}
-
-
 
 			for(int i = 0; i < labirynth.size(); i++){
             for(int j = 0; j < labirynth[i].size(); j++)
