@@ -38,7 +38,7 @@ int goalY = 5;
 
 int main( void )
 {
-    std::vector<std::vector<int>> labirynth(10, std::vector<int>(10));
+    std::vector<std::vector<int> > labirynth(10, std::vector<int>(10));
 	// Initialise GLFW
 	if( !glfwInit() )
 	{
@@ -180,6 +180,7 @@ int main( void )
 
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
+		detectCollision(labirynth);
 
 		glm::mat4 VP = getProjectionMatrix() * getViewMatrix();
 

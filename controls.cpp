@@ -33,7 +33,25 @@ float speed = 3.0f; // 3 units / second
 float mouseSpeed = 0.005f;
 bool inAir = true;
 float currSpeedUp = 0.0f;
+float prevPosX = position.x;
+float prevPosZ = position.z;
 
+void detectCollision(std::vector<std::vector<int> > labirynth){
+    float buffer = 0.2;
+    for(int i = 0; i < labirynth.size(); i++)
+        for(int j = 0; j < labirynth[i].size(); j++)
+            if(labirynth[i][j] == 1
+               && position.x <= 2*i + 1 + buffer
+               && position.x >= 2*i - 1 - buffer
+               && position.z <= 2*j + 1 + buffer
+               && position.z >= 2*j - 1 - buffer){
+                position.x = prevPosX;
+                position.z = prevPosZ;
+                break;
+            }
+    prevPosX = position.x;
+    prevPosZ = position.z;
+}
 
 void computeMatricesFromInputs(){
 
@@ -98,7 +116,7 @@ void computeMatricesFromInputs(){
     }
     //falling
     if(inAir == true){
-        currSpeedUp -= speed/40;
+        currSpeedUp -= speed/30;
         position += up * deltaTime * currSpeedUp;
         if(position.y <= 1.0)
             inAir = false;
