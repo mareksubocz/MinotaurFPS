@@ -16,6 +16,8 @@ GLFWwindow* window;
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
+#include <iostream>
+
 #include "shader.hpp"
 #include "texture.hpp"
 #include "controls.hpp"
@@ -24,16 +26,19 @@ using namespace glm;
 
 #include <vector>
 
-//Zwraca jedynki tam, gdzie maja byc szesciany
-std::vector< std::vector<bool> > labirynt(int rozmiar){
-    std::vector< std::vector<bool> > a(rozmiar,std::vector<bool>(rozmiar, int(rand()*2/RAND_MAX)));
-    a[0][0] = a[rozmiar-1][rozmiar-1] = 0;
-    return a;
-}
+
+
+#define LABIRYNTH_NOTHING 0
+#define LABIRYNTH_WALL 1
+#define LABIRYNTH_GOAL 2
+int goalSet = 0;
+int goalX = 5;
+int goalY = 5;
+
 
 int main( void )
 {
-    labirynt(4);
+    std::vector<std::vector<int>> labirynth(10, std::vector<int>(10));
 	// Initialise GLFW
 	if( !glfwInit() )
 	{
@@ -97,6 +102,34 @@ int main( void )
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
 
+	//generate map
+    		for(int i = 0; i < labirynth.size(); i++){
+            for(int j = 0; j < labirynth[i].size(); j++)
+                if(((int)rand())%4==0) //25% chance for a block to be blocked
+                    labirynth[i][j] = LABIRYNTH_WALL;
+                else if(!goalSet && ((int)rand())%15==0){
+                    labirynth[i][j] = LABIRYNTH_GOAL;
+                    goalSet = 1;
+                    goalX = i;
+                    goalY = j;
+
+                }
+
+            if(!goalSet)
+                labirynth[5][5] = LABIRYNTH_GOAL;
+		}
+
+
+
+			for(int i = 0; i < labirynth.size(); i++){
+            for(int j = 0; j < labirynth[i].size(); j++)
+                std::cout << labirynth[i][j] << " ";
+            std::cout << std::endl;
+
+		}
+
+
+
 
 	// Read our .obj file
 	std::vector<glm::vec3> gunVertices;
@@ -150,11 +183,35 @@ int main( void )
 
 		glm::mat4 VP = getProjectionMatrix() * getViewMatrix();
 
-
-
-
-
 		glm::mat4 M = glm::mat4(1.0);
+
+        for(int i = 0; i < labirynth.size(); i++){
+            for(int j = 0; j < labirynth[i].size(); j++){
+                if(labirynth[i][j] != LABIRYNTH_WALL)
+                    continue;
+                M = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+                              0.0f, 1.0f, 0.0f, 0.0f,
+                              0.0f, 0.0f, 1.0f, 0.0f,
+                              2*i,0.0f, 2*j, 1.0f);
+
+                glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+                glBufferData(GL_ARRAY_BUFFER, wallVertices.size() * sizeof(glm::vec3), &wallVertices[0], GL_STATIC_DRAW);
+
+                //same with UV buffer
+                glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+                glBufferData(GL_ARRAY_BUFFER, wallUvs.size() * sizeof(glm::vec2), &wallUvs[0], GL_STATIC_DRAW);
+
+                drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, wallVertices.size(), wallTexture, TextureID);
+
+
+
+            }
+
+
+
+		}
+
+
 
         //==============================DRAW A GUN==========================================
         //fill vertex buffer with vertex data
@@ -171,7 +228,13 @@ int main( void )
 
         //==============================DRAW A CHAIR==========================================
         //fill vertex buffer with vertex data
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        if(goalSet){
+           M = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+                              0.0f, 1.0f, 0.0f, 0.0f,
+                              0.0f, 0.0f, 1.0f, 0.0f,
+                              2*goalX,0.0f, 2*goalY, 1.0f);
+
+          glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glBufferData(GL_ARRAY_BUFFER, chairVertices.size() * sizeof(glm::vec3), &chairVertices[0], GL_STATIC_DRAW);
 
         //same with UV buffer
@@ -180,17 +243,9 @@ int main( void )
 
         drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, chairVertices.size(), chairTexture, TextureID);
 
+        }
 
-        //==============================DRAW A WALL==========================================
-        //fill vertex buffer with vertex data
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, wallVertices.size() * sizeof(glm::vec3), &wallVertices[0], GL_STATIC_DRAW);
 
-        //same with UV buffer
-        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-        glBufferData(GL_ARRAY_BUFFER, wallUvs.size() * sizeof(glm::vec2), &wallUvs[0], GL_STATIC_DRAW);
-
-        drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, wallVertices.size(), wallTexture, TextureID);
 
 
         //==============================DRAW THE FLOOR==========================================
