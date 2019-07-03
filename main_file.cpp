@@ -214,18 +214,6 @@ int main( void )
 
 
 
-        //==============================DRAW A GUN==========================================
-        //fill vertex buffer with vertex data
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, gunVertices.size() * sizeof(glm::vec3), &gunVertices[0], GL_STATIC_DRAW);
-
-        //same with UV buffer
-        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-        glBufferData(GL_ARRAY_BUFFER, gunUvs.size() * sizeof(glm::vec2), &gunUvs[0], GL_STATIC_DRAW);
-
-
-        drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, gunVertices.size(), gunTexture, TextureID);
-
 
         //==============================DRAW A CHAIR==========================================
         //fill vertex buffer with vertex data
@@ -259,6 +247,29 @@ int main( void )
         glBufferData(GL_ARRAY_BUFFER, floorUvs.size() * sizeof(glm::vec2), &floorUvs[0], GL_STATIC_DRAW);
 
         drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, floorVertices.size(), floorTexture, TextureID);
+
+
+
+        //==============================DRAW A GUN==========================================
+        //clear depth buffer so gun is always on top
+        glClear(GL_DEPTH_BUFFER_BIT);
+        //fill vertex buffer with vertex data
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, gunVertices.size() * sizeof(glm::vec3), &gunVertices[0], GL_STATIC_DRAW);
+
+        //same with UV buffer
+        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+        glBufferData(GL_ARRAY_BUFFER, gunUvs.size() * sizeof(glm::vec2), &gunUvs[0], GL_STATIC_DRAW);
+
+        glm::vec3 pos = getPosition();
+
+
+        M = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      glm::sin(pos.x*2)*0.05, glm::sin(pos.z*4)*0.05, -0.5f, 1.0f);//WORK IN PROGRESS
+        glm::mat4 P = getProjectionMatrix();
+        drawModel(vertexbuffer, uvbuffer, M, P, MatrixID, gunVertices.size(), gunTexture, TextureID);
 
 
 		// Swap buffers
