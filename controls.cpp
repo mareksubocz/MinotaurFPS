@@ -136,7 +136,6 @@ void computeMatricesFromInputs(){
     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
         glfwGetWindowSize(window, &width, &height);
         glReadPixels(width/2, height/2,1,1, GL_GREEN, GL_FLOAT, &pixel);
-        std::cout<<pixel<<std::endl;
         if( (pixel <= 0.313726 + buffer && pixel >= 0.313726 - buffer) || pixel >= 1.0 - buffer)
             std::cout<<"WIN"<<std::endl;
     }
