@@ -24,8 +24,8 @@
 
 
 
-void drawModel(GLuint &vertexbuffer, GLuint &uvbuffer, glm::mat4 &M,
-               glm::mat4 &VP, GLuint &MatrixID, unsigned int vertexNumber, GLuint &Texture, GLuint &TextureID);
+void drawModel(GLuint &vertexbuffer, GLuint &uvbuffer, GLuint &normalbuffer, glm::mat4 &M,
+               glm::mat4 &VP, GLuint &MatrixID, GLuint &ModelMatrixID, unsigned int vertexNumber, GLuint &Texture, GLuint &TextureID);
 
 
 

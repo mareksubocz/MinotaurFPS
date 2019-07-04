@@ -32,6 +32,7 @@ using namespace glm;
 #define LABIRYNTH_NOTHING 0
 #define LABIRYNTH_WALL 1
 #define LABIRYNTH_GOAL 2
+#define LABIRYNTH_LIGHT 3
 int goalSet = 0;
 int goalX = 5;
 int goalY = 5;
@@ -102,31 +103,37 @@ int main( void )
 
 	// Get a handle for our "MVP" uniform
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+	GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
 
 
 	//generate map
-    		for(int i = 0; i < labirynth.size(); i++){
-            for(int j = 1; j < labirynth[i].size(); j++)
-                if(((int)rand())%4==0) //25% chance for a block to be blocked
-                    labirynth[i][j] = LABIRYNTH_WALL;
-                else if(!goalSet && ((int)rand())%15==0){
-                    labirynth[i][j] = LABIRYNTH_GOAL;
-                    goalSet = 1;
-                    goalX = i;
-                    goalY = j;
+    int lights = 0;
+    for(int i = 0; i < labirynth.size(); i++){
+        for(int j = 1; j < labirynth[i].size(); j++)
+            if(((int)rand())%4==0) //25% chance for a block to be blocked
+                labirynth[i][j] = LABIRYNTH_WALL;
+            else if(!goalSet && ((int)rand())%15==0){
+                labirynth[i][j] = LABIRYNTH_GOAL;
+                goalSet = 1;
+                goalX = i;
+                goalY = j;
 
-                }
+            }
 
-            if(!goalSet)
-                labirynth[5][5] = LABIRYNTH_GOAL;
-		}
+    if(!goalSet)
+        labirynth[5][5] = LABIRYNTH_GOAL;
+    }
 
-			for(int i = 0; i < labirynth.size(); i++){
-            for(int j = 0; j < labirynth[i].size(); j++)
-                std::cout << labirynth[i][j] << " ";
-            std::cout << std::endl;
+    for(int i = 0; i < labirynth.size(); i++){
+        for(int j = 0; j < labirynth[i].size(); j++)
+            std::cout << labirynth[i][j] << " ";
+        std::cout << std::endl;
 
-		}
+    }
+
+    std::cout << std::endl;
+
+
 
 
 
@@ -162,12 +169,18 @@ int main( void )
 	GLuint chairTexture = loadDDS("chair.dds");
 	GLuint floorTexture = loadDDS("floor.dds");
 
+
+
+
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 
 
 	GLuint uvbuffer;
 	glGenBuffers(1, &uvbuffer);
+
+	GLuint normalbuffer;
+	glGenBuffers(1, &normalbuffer);
 
 
 	do{
@@ -202,7 +215,12 @@ int main( void )
                 glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
                 glBufferData(GL_ARRAY_BUFFER, wallUvs.size() * sizeof(glm::vec2), &wallUvs[0], GL_STATIC_DRAW);
 
-                drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, wallVertices.size(), wallTexture, TextureID);
+
+                glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+                glBufferData(GL_ARRAY_BUFFER, wallNormals.size() * sizeof(glm::vec3), &wallNormals[0], GL_STATIC_DRAW);
+
+
+                drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, ModelMatrixID, wallVertices.size(), wallTexture, TextureID);
 
 
 
@@ -211,8 +229,6 @@ int main( void )
 
 
 		}
-
-
 
 
         //==============================DRAW A CHAIR==========================================
@@ -230,7 +246,10 @@ int main( void )
         glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
         glBufferData(GL_ARRAY_BUFFER, chairUvs.size() * sizeof(glm::vec2), &chairUvs[0], GL_STATIC_DRAW);
 
-        drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, chairVertices.size(), chairTexture, TextureID);
+        glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+        glBufferData(GL_ARRAY_BUFFER, chairNormals.size() * sizeof(glm::vec3), &chairNormals[0], GL_STATIC_DRAW);
+
+        drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, ModelMatrixID, chairVertices.size(), chairTexture, TextureID);
 
         }
 
@@ -246,7 +265,12 @@ int main( void )
         glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
         glBufferData(GL_ARRAY_BUFFER, floorUvs.size() * sizeof(glm::vec2), &floorUvs[0], GL_STATIC_DRAW);
 
-        drawModel(vertexbuffer, uvbuffer, M, VP, MatrixID, floorVertices.size(), floorTexture, TextureID);
+
+        glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+        glBufferData(GL_ARRAY_BUFFER, floorNormals.size() * sizeof(glm::vec3), &floorNormals[0], GL_STATIC_DRAW);
+
+
+        drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, ModelMatrixID, floorVertices.size(), floorTexture, TextureID);
 
 
 
@@ -261,26 +285,31 @@ int main( void )
         glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
         glBufferData(GL_ARRAY_BUFFER, gunUvs.size() * sizeof(glm::vec2), &gunUvs[0], GL_STATIC_DRAW);
 
+
+        glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+        glBufferData(GL_ARRAY_BUFFER, gunNormals.size() * sizeof(glm::vec3), &gunNormals[0], GL_STATIC_DRAW);
+
+
         glm::vec3 pos = getPosition();
 
 
         M = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
                       0.0f, 1.0f, 0.0f, 0.0f,
                       0.0f, 0.0f, 1.0f, 0.0f,
-                      glm::sin(pos.x*2)*0.05, glm::sin(pos.z*4)*0.05, -0.5f, 1.0f);//WORK IN PROGRESS
+                      glm::sin(pos.x*2)*0.05, glm::sin(pos.z*4)*0.05, -0.5f, 1.0f);
         glm::mat4 P = getProjectionMatrix();
-        drawModel(vertexbuffer, uvbuffer, M, P, MatrixID, gunVertices.size(), gunTexture, TextureID);
+        drawModel(vertexbuffer, uvbuffer, normalbuffer, M, P, MatrixID, ModelMatrixID, gunVertices.size(), gunTexture, TextureID);
 
 
 		// Swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
-	} // Check if the ESC key was pressed or the window was closed
+	}
 	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
 		   glfwWindowShouldClose(window) == 0 );
 
-	// Cleanup VBO and shader
+	// Cleanup
 	glDeleteBuffers(1, &vertexbuffer);
 	glDeleteBuffers(1, &uvbuffer);
 	glDeleteProgram(programID);
