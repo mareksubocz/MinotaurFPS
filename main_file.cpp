@@ -166,6 +166,9 @@ int main( void )
 
 
 	do{
+        // Compute the MVP matrix from keyboard and mouse input
+		computeMatricesFromInputs();
+		detectCollision(labirynth);
 
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -173,9 +176,7 @@ int main( void )
 		// Use our shader
 		glUseProgram(programID);
 
-		// Compute the MVP matrix from keyboard and mouse input
-		computeMatricesFromInputs();
-		detectCollision(labirynth);
+
 
 		glm::mat4 VP = getProjectionMatrix() * getViewMatrix();
 
