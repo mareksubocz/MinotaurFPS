@@ -7,6 +7,7 @@ extern GLFWwindow* window;
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
+#include<iostream>
 #include "controls.hpp"
 
 glm::mat4 ViewMatrix;
@@ -59,6 +60,8 @@ void detectCollision(std::vector<std::vector<int> > labirynth){
     prevPosX = position.x;
     prevPosZ = position.z;
 }
+
+
 
 void computeMatricesFromInputs(){
 
@@ -130,6 +133,17 @@ void computeMatricesFromInputs(){
             inAir = false;
     }
     if(position.y < 1.0) position.y = 1;
+
+    //shooting
+
+    if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+        float pixel = 65.0;
+        //glfwGetWindowSize(&width, &height);
+        //std::cout<<width<<" "<<height<<std::endl;
+        glReadPixels(1024 / 2, 768 / 2, 1, 1, GL_BLUE, GL_FLOAT, &pixel);
+        //glReadPixels(1, 1, 1, 1, GL_BLUE, GL_FLOAT, &pixel);
+        std::cout<<pixel<<std::endl;
+    }
 
 	float FoV = initialFoV;
 

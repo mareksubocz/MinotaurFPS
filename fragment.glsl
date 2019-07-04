@@ -16,9 +16,10 @@ void main(){
 
 	//hehe
 	vec3 norm = normalize(Normal);
-	vec3 lightDirs[3] = {normalize(vec3(1, 1, 1)),
-                        normalize(vec3(2, -3, -7)),
-                        normalize(vec3(1, 6, 2))};
+	vec3 lightDirs[3];
+	lightDirs[0] = normalize(vec3(1, 1, 1));
+    lightDirs[1] = normalize(vec3(2, -3, -7));
+    lightDirs[2] = normalize(vec3(1, 6, 2));
 
 	float diffuse = 0;
 	for(int i = 0; i < 3; i++){
