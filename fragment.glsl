@@ -1,13 +1,14 @@
 #version 330 core
 
-// Interpolated values from the vertex shaders
 in vec2 UV;
+in vec3 Normal;
 
-// Ouput data
 out vec3 color;
 
-// Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
+uniform vec3 lightLocationsX[25];
+uniform vec3 lightLocationsY[25];
+uniform vec3 lightLocationsZ[25];
 
 void main(){
 
