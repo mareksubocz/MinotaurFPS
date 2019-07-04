@@ -294,15 +294,12 @@ int main( void )
             switch(rand() % 3){
                 case 0:
                      sample = BASS_SampleLoad(false, "footstep0.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
-                     std::cout << "played0" << std::endl;
                     break;
                 case 1:
                      sample = BASS_SampleLoad(false, "footstep1.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
-                     std::cout << "played1" << std::endl;
                     break;
                 case 2:
                      sample = BASS_SampleLoad(false, "footstep2.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
-                     std::cout << "played2" << std::endl;
                     break;
             }
 
