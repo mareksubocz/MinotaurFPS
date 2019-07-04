@@ -1,8 +1,6 @@
-// Include GLFW
 #include <GLFW/glfw3.h>
 extern GLFWwindow* window;
 
-// Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;

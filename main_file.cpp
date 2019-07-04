@@ -80,8 +80,6 @@ int main( void )
     BASS_SetVolume(1);
 
 
-
-
 	//background color
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -96,7 +94,6 @@ int main( void )
 
 	GLuint programID = LoadShaders( "vertex.glsl", "fragment.glsl" );
 
-	// Get a handle for our MVP uniform
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 	GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
 
@@ -132,25 +129,25 @@ int main( void )
 
 
 
-	// Read our .obj file
+	// Read GUN .obj file
 	std::vector<glm::vec3> gunVertices;
 	std::vector<glm::vec2> gunUvs;
 	std::vector<glm::vec3> gunNormals; // Won't be used at the moment.
 	loadOBJ("GUN.obj", gunVertices, gunUvs, gunNormals);
 
-	// Read our .obj file
+	// Read CHAIR .obj file
 	std::vector<glm::vec3> chairVertices;
 	std::vector<glm::vec2> chairUvs;
 	std::vector<glm::vec3> chairNormals; // Won't be used at the moment.
 	loadOBJ("CHAIR.obj", chairVertices, chairUvs, chairNormals);
 
-	// Read our .obj file
+	// Read WALL .obj file
 	std::vector<glm::vec3> wallVertices;
 	std::vector<glm::vec2> wallUvs;
 	std::vector<glm::vec3> wallNormals; // Won't be used at the moment.
 	loadOBJ("WALL.obj", wallVertices, wallUvs, wallNormals);
 
-		// Read our .obj file
+		// Read FLOOR .obj file
 	std::vector<glm::vec3> floorVertices;
 	std::vector<glm::vec2> floorUvs;
 	std::vector<glm::vec3> floorNormals; // Won't be used at the moment.
@@ -177,7 +174,7 @@ int main( void )
 
 
 	do{
-        // Compute the MVP matrix from keyboard and mouse input
+    // Compute MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 		detectCollision(labirynth);
 
@@ -186,8 +183,6 @@ int main( void )
 
 		// Use our shader
 		glUseProgram(programID);
-
-
 
 		glm::mat4 VP = getProjectionMatrix() * getViewMatrix();
 
@@ -214,9 +209,6 @@ int main( void )
 
 
                 drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, ModelMatrixID, wallVertices.size(), wallTexture, TextureID);
-
-
-
             }
 
 
