@@ -23,12 +23,14 @@ using namespace glm;
 
 
 void drawModel(GLuint &vertexbuffer, GLuint &uvbuffer, GLuint &normalbuffer,
-               glm::mat4 &M, glm::mat4 &VP, GLuint &MatrixID, unsigned int vertexNumber, GLuint &Texture, GLuint &TextureID){
+               glm::mat4 &M, glm::mat4 &VP, GLuint &MatrixID, GLuint &ModelMatrixID, unsigned int vertexNumber, GLuint &Texture, GLuint &TextureID){
 
 		glm::mat4 MVP = VP * M;
 
 		//send MVP to shader uniform
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+		glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &M[0][0]);
+
 
 		//bind texture
 		glActiveTexture(GL_TEXTURE0);

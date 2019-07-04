@@ -104,6 +104,7 @@ int main( void )
 
 	// Get a handle for our "MVP" uniform
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+	GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
 
 
 	//generate map
@@ -241,7 +242,7 @@ int main( void )
                 glBufferData(GL_ARRAY_BUFFER, wallNormals.size() * sizeof(glm::vec3), &wallNormals[0], GL_STATIC_DRAW);
 
 
-                drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, wallVertices.size(), wallTexture, TextureID);
+                drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, ModelMatrixID, wallVertices.size(), wallTexture, TextureID);
 
 
 
@@ -250,19 +251,6 @@ int main( void )
 
 
 		}
-
-
-
-
-        //same with UV buffer
-        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-        glBufferData(GL_ARRAY_BUFFER, gunUvs.size() * sizeof(glm::vec2), &gunUvs[0], GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-        glBufferData(GL_ARRAY_BUFFER, gunNormals.size() * sizeof(glm::vec3), &gunNormals[0], GL_STATIC_DRAW);
-
-
-        drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, gunVertices.size(), gunTexture, TextureID);
 
 
         //==============================DRAW A CHAIR==========================================
@@ -283,7 +271,7 @@ int main( void )
         glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
         glBufferData(GL_ARRAY_BUFFER, chairNormals.size() * sizeof(glm::vec3), &chairNormals[0], GL_STATIC_DRAW);
 
-        drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, chairVertices.size(), chairTexture, TextureID);
+        drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, ModelMatrixID, chairVertices.size(), chairTexture, TextureID);
 
         }
 
@@ -304,7 +292,7 @@ int main( void )
         glBufferData(GL_ARRAY_BUFFER, floorNormals.size() * sizeof(glm::vec3), &floorNormals[0], GL_STATIC_DRAW);
 
 
-        drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, floorVertices.size(), floorTexture, TextureID);
+        drawModel(vertexbuffer, uvbuffer, normalbuffer, M, VP, MatrixID, ModelMatrixID, floorVertices.size(), floorTexture, TextureID);
 
 
 
@@ -332,7 +320,7 @@ int main( void )
                       0.0f, 0.0f, 1.0f, 0.0f,
                       glm::sin(pos.x*2)*0.05, glm::sin(pos.z*4)*0.05, -0.5f, 1.0f);
         glm::mat4 P = getProjectionMatrix();
-        drawModel(vertexbuffer, uvbuffer, normalbuffer, M, P, MatrixID, gunVertices.size(), gunTexture, TextureID);
+        drawModel(vertexbuffer, uvbuffer, normalbuffer, M, P, MatrixID, ModelMatrixID, gunVertices.size(), gunTexture, TextureID);
 
 
 		// Swap buffers

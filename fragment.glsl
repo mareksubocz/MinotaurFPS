@@ -2,6 +2,7 @@
 
 in vec2 UV;
 in vec3 Normal;
+in vec3 fragmentPos;
 
 out vec3 color;
 
