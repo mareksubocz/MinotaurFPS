@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <ctime>
+#include <string>
 
 #include <GL/glew.h>
 
@@ -22,6 +23,9 @@ using namespace glm;
 #include <drawmodel.hpp>
 
 #include <vector>
+
+#include <bass.h>
+#pragma comment(lib, "Bass.lib")
 
 
 
@@ -70,6 +74,13 @@ int main( void )
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwPollEvents();
     glfwSetCursorPos(window, 1024/2, 768/2);
+
+
+    BASS_Init(-1, 44100, 0, 0, NULL);
+    BASS_SetVolume(1);
+
+
+
 
 	//background color
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -277,6 +288,40 @@ int main( void )
 		// Swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		if(getPlayFootstep()){
+            HSAMPLE sample;
+            switch(rand() % 3){
+                case 0:
+                     sample = BASS_SampleLoad(false, "footstep0.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
+                     std::cout << "played0" << std::endl;
+                    break;
+                case 1:
+                     sample = BASS_SampleLoad(false, "footstep1.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
+                     std::cout << "played1" << std::endl;
+                    break;
+                case 2:
+                     sample = BASS_SampleLoad(false, "footstep2.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
+                     std::cout << "played2" << std::endl;
+                    break;
+            }
+
+            HCHANNEL channel=BASS_SampleGetChannel(sample, FALSE);
+            BASS_ChannelPlay(channel, FALSE);
+		}
+
+		if(getPlayGunshot()){
+            HSAMPLE sample = BASS_SampleLoad(false, "gunshot.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
+            HCHANNEL channel=BASS_SampleGetChannel(sample, FALSE);
+            BASS_ChannelPlay(channel, FALSE);
+		}
+
+		if(getPlayVictory()){
+            HSAMPLE sample = BASS_SampleLoad(false, "victory.ogg", 0, 0, 1, BASS_SAMPLE_MONO);
+            HCHANNEL channel=BASS_SampleGetChannel(sample, FALSE);
+            BASS_ChannelPlay(channel, FALSE);
+		}
+
 
 	}
 	while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&

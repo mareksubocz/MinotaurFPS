@@ -26,6 +26,22 @@ glm::vec3 getPosition(){
     return position;
 }
 
+float lastGunshot = 0;
+int playGunshot = 0;
+int getPlayGunshot(){
+    return playGunshot;
+}
+float lastFootstep = 0;
+int playFootstep = 0;
+int getPlayFootstep(){
+    return playFootstep;
+}
+
+int playVictory = 0;
+int getPlayVictory(){
+    return playVictory;
+}
+
 
 
 
@@ -100,21 +116,33 @@ void computeMatricesFromInputs(){
     glm::vec3 up(0, 1, 0);
 
 
+    int moved = 0;
 	if (glfwGetKey( window, GLFW_KEY_W ) == GLFW_PRESS){
 		position += glm::normalize(direction * nullOutVertical) * deltaTime * speed;
+		moved = 1;
 	}
 
 	if (glfwGetKey( window, GLFW_KEY_S ) == GLFW_PRESS){
 		position -= glm::normalize(direction * nullOutVertical) * deltaTime * speed;
+		moved = 1;
 	}
 
 	if (glfwGetKey( window, GLFW_KEY_D ) == GLFW_PRESS){
 		position += right * deltaTime * speed;
+		moved = 1;
 	}
 
 	if (glfwGetKey( window, GLFW_KEY_A ) == GLFW_PRESS){
 		position -= right * deltaTime * speed;
+		moved = 1;
 	}
+
+	playFootstep = 0;
+	if(moved && lastFootstep + 1 < glfwGetTime()){
+        playFootstep = 1;
+        lastFootstep = glfwGetTime();
+	}
+
 
     if(glfwGetKey( window, GLFW_KEY_SPACE ) == GLFW_PRESS && inAir == false){
         inAir = true;
@@ -133,11 +161,20 @@ void computeMatricesFromInputs(){
     float pixel;
     int width, height;
     float buffer = 0.00001;
-    if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+    playGunshot = 0;
+    playVictory = 0;
+    if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && lastGunshot + 1 < glfwGetTime()){
+        lastGunshot = glfwGetTime();
+
+        playGunshot = 1;
         glfwGetWindowSize(window, &width, &height);
         glReadPixels(width/2, height/2,1,1, GL_GREEN, GL_FLOAT, &pixel);
-        if( (pixel <= 0.313726 + buffer && pixel >= 0.313726 - buffer) || pixel >= 1.0 - buffer)
+
+        if( (pixel <= 0.313726 + buffer && pixel >= 0.313726 - buffer) || pixel >= 1.0 - buffer){
             std::cout<<"WIN"<<std::endl;
+            playVictory = 1;
+        }
+
     }
 
 	ProjectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
