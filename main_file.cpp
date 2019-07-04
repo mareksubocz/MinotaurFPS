@@ -36,7 +36,6 @@ using namespace glm;
 int goalSet = 0;
 int goalX = 5;
 int goalY = 5;
-GLint lightList [3][25];
 
 
 int main( void )
@@ -120,13 +119,6 @@ int main( void )
                 goalY = j;
 
             }
-            else if((int)rand()%5 == 0){ //20% chance for light to happen
-                labirynth[i][j] = LABIRYNTH_LIGHT;
-                lightList[0][lights] = 2*i;
-                lightList[1][lights] = 2;
-                lightList[2][lights] = 2*j;
-                lights++;
-            }
 
     if(!goalSet)
         labirynth[5][5] = LABIRYNTH_GOAL;
@@ -141,14 +133,7 @@ int main( void )
 
     std::cout << std::endl;
 
-    for(int i = 0; i < 3; i++){
-        for(int j = 0; j < 25; j++){
-            std::cout << lightList[i][j] << " ";
 
-        }
-        std::cout << std::endl;
-
-    }
 
 
 
@@ -185,13 +170,6 @@ int main( void )
 	GLuint floorTexture = loadDDS("floor.dds");
 
 
-	GLuint LightsXID = glGetUniformLocation(programID, "lightLocationsX");
-	GLuint LightsYID = glGetUniformLocation(programID, "lightLocationsY");
-	GLuint LightsZID = glGetUniformLocation(programID, "lightLocationsZ");
-
-	glUniform1iv(LightsXID, 25, lightList[0]);
-	glUniform1iv(LightsYID, 25, lightList[1]);
-	glUniform1iv(LightsZID, 25, lightList[2]);
 
 
 	GLuint vertexbuffer;

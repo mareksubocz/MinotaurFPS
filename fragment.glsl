@@ -7,12 +7,33 @@ in vec3 fragmentPos;
 out vec3 color;
 
 uniform sampler2D myTextureSampler;
-uniform vec3 lightLocationsX[25];
-uniform vec3 lightLocationsY[25];
-uniform vec3 lightLocationsZ[25];
+
 
 void main(){
 
-	// Output color = color of the texture at the specified UV
-	color = texture( myTextureSampler, UV ).rgb;
+	// Probe texture for color
+
+
+	//hehe
+	vec3 norm = normalize(Normal);
+	vec3 lightDirs[3] = {normalize(vec3(1, 1, 1)),
+                        normalize(vec3(2, -3, -7)),
+                        normalize(vec3(1, 6, 2))};
+
+	float diffuse = 0;
+	for(int i = 0; i < 3; i++){
+
+        //sum all lights affecting the surface
+        diffuse += 0.8*(max(dot(norm, lightDirs[i]), 0.0));
+
+	}
+
+	if(diffuse <= 0.2) diffuse = 0.2;
+
+
+	color = diffuse * texture(myTextureSampler, UV).rgb;
+
+
+
+
 }
