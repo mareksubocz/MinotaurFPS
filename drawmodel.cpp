@@ -23,7 +23,8 @@ using namespace glm;
 
 
 void drawModel(GLuint &vertexbuffer, GLuint &uvbuffer, GLuint &normalbuffer,
-               glm::mat4 &M, glm::mat4 &VP, GLuint &MatrixID, GLuint &ModelMatrixID, unsigned int vertexNumber, GLuint &Texture, GLuint &TextureID){
+               glm::mat4 &M, glm::mat4 &VP, GLuint &MatrixID, GLuint &ModelMatrixID,
+               unsigned int vertexNumber, GLuint &Texture, GLuint &TextureID){
 
 		glm::mat4 MVP = VP * M;
 
@@ -38,44 +39,43 @@ void drawModel(GLuint &vertexbuffer, GLuint &uvbuffer, GLuint &normalbuffer,
 
 		glUniform1i(TextureID, 0);
 
-		// 1st attribute buffer : vertices
+		//Vertices
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glVertexAttribPointer(
-			0,                  // attribute
-			3,                  // size
-			GL_FLOAT,           // type
-			GL_FALSE,           // normalized?
-			0,                  // stride
-			(void*)0            // array buffer offset
+			0,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 
-		// 2nd attribute buffer : UVs
+        //UVs
 		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 		glVertexAttribPointer(
-			1,                                // attribute
-			2,                                // size
-			GL_FLOAT,                         // type
-			GL_FALSE,                         // normalized?
-			0,                                // stride
-			(void*)0                          // array buffer offset
+			1,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 
-		// 3rd attribute buffer : normals
 
+        //NORMALS
 		glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
 		glVertexAttribPointer(
-			2,                                // attribute
-			3,                                // size
-			GL_FLOAT,                         // type
-			GL_FALSE,                         // normalized?
-			0,                                // stride
-			(void*)0                          // array buffer offset
+			2,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 
-		// Draw the triangle !
 		glDrawArrays(GL_TRIANGLES, 0, vertexNumber );
 
 		glDisableVertexAttribArray(0);
