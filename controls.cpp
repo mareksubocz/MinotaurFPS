@@ -130,12 +130,15 @@ void computeMatricesFromInputs(){
     if(position.y < 1.0) position.y = 1;
 
     //shooting
-    float pixel = 65.0;
+    int pixel[] = {69, 69, 69};
     int width, height;
     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
         glfwGetWindowSize(window, &width, &height);
-        glReadPixels(width / 2, height / 2, 1, 1, GL_GREEN, GL_FLOAT, &pixel);
-        std::cout<<pixel<<std::endl;
+        glReadPixels(width/2, height/2,1,1, GL_RGB, GL_INT, pixel);
+        std::cout<<pixel[0]<<std::endl;
+        std::cout<<pixel[1]<<std::endl;
+        std::cout<<pixel[2]<<std::endl;
+        std::cout<<"*************"<<std::endl;
     }
 
 	ProjectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
